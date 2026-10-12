@@ -4,6 +4,10 @@ All notable changes to this project are documented in this file. The format is b
 
 ## [Unreleased]
 
+### Changed
+
+- Paper metadata updated to the published record: FoundUS satellite event, MICCAI 2026 Workshops and Challenges (LNCS 17261), with links to the open-access page, PDF and OpenReview; official BibTeX adopted.
+
 ## [1.1.0] - 2026-10-12
 
 ### Changed

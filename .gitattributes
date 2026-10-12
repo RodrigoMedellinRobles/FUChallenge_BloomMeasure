@@ -1,0 +1,12 @@
+# Default: normalize line endings for the repository's own documents.
+* text=auto eol=lf
+
+# Archival content: stored and checked out byte-for-byte, never normalized.
+# docker/ is the build context of the submitted image (md5 in verification/CHECKSUMS.txt
+# and docker/vendor/INVENTORY.md); training_code/ and verification/ are run records.
+docker/** -text
+training_code/** -text
+verification/** -text
+
+*.pth binary
+*.xz binary

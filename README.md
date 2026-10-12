@@ -8,7 +8,7 @@ BloomMeasure is an ensemble of five landmark models. Their 64x64 heatmaps are av
 | Challenge | FU_Biometry / FUB 2026, MICCAI 2026 |
 | Final test result | average MRE 22.6033, average MAE 27.3467 |
 | Leaderboard rank | 13 of 31 on Leaderboard A, 9 of 31 on Leaderboard B |
-| Paper | "Multi-Task Landmark Detection for Fetal and Cardiac Ultrasound Biometry under Label Scarcity," MWM 2026, paper 92 |
+| Paper | [Multi-Task Landmark Detection for Fetal and Cardiac Ultrasound Biometry under Label Scarcity](https://papers.miccai.org/miccai-2026-sat/FoundUS_092.html), MICCAI 2026 Workshops and Challenges (FoundUS satellite event, paper 92), LNCS 17261, Springer. [Open-access PDF](https://papers.miccai.org/miccai-2026-sat/paper/FoundUS_092.pdf), [OpenReview](https://openreview.net/forum?id=P9ojyliHnQ). DOI pending |
 | Docker image | `flajucas/fu-biometry:v1.0.0`, digest `sha256:704004984a1a959e7757ac3e1d279cc13827ab4987c4c16c2acf2b4f076bafa1` |
 | Contact | rodrigo@bloomstandard.com |
 
@@ -173,17 +173,23 @@ The header of `docker/model.py` refers to internal repository paths and calls th
 
 ## Citation
 
+The entry below is the one published on the MICCAI open-access page; the volume, month and page fields will be completed by the publisher.
+
 ```bibtex
-@inproceedings{medellinrobles2026bloommeasure,
-  title = {Multi-Task Landmark Detection for Fetal and Cardiac Ultrasound Biometry under Label Scarcity},
-  author = {Medellin-Robles, Rodrigo and Juarez-Castro, Flavio A. and Bukhari, Mohammad A.},
-  booktitle = {MICCAI 2026 Workshop on Medical Ultrasound (MWM 2026)},
-  year = {2026},
-  note = {paper 92}
+@InProceedings{MedRod_MultiTask_MICCAISAT2026,
+  author    = {Medellin-Robles, Rodrigo AND Juárez-Castro, Flavio A. AND Bukhari, Mohammad Abdullah},
+  title     = {{Multi-Task Landmark Detection for Fetal and Cardiac Ultrasound Biometry under Label Scarcity}},
+  booktitle = {Medical Image Computing and Computer Assisted Intervention -- MICCAI 2026 Workshops and Challenges},
+  year      = {2026},
+  publisher = {Springer Nature Switzerland},
+  volume    = {LNCS 17261},
+  month     = {pending},
+  page      = {pending},
+  url       = {https://papers.miccai.org/miccai-2026-sat/FoundUS_092.html}
 }
 ```
 
-See `CITATION.cff` for machine-readable metadata.
+Open-access PDF: https://papers.miccai.org/miccai-2026-sat/paper/FoundUS_092.pdf. OpenReview: https://openreview.net/forum?id=P9ojyliHnQ. See `CITATION.cff` for machine-readable metadata.
 
 ## License
 

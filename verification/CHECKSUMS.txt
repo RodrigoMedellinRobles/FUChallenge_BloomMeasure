@@ -1,0 +1,38 @@
+# CHECKSUMS - Bloom Standard, FUB 2026 final test submission (system D7)
+# Everything listed here must be present inside the submitted Docker image,
+# except oracle_d7.json, which is a local reference file for comparison only.
+
+## The submitted image itself, by immutable digest.
+## Read from the Docker Hub registry manifest for the tag we submitted; pinning the digest
+## makes the reference immutable even if the tag is later moved.
+##   docker buildx imagetools inspect flajucas/fu-biometry:v1.0.0
+sha256:704004984a1a959e7757ac3e1d279cc13827ab4987c4c16c2acf2b4f076bafa1  flajucas/fu-biometry:v1.0.0
+
+## sha256 - the five ensemble weight files, expected at /app/weights/
+a55e14fa7e4bca916e08df1a0af6587a840a86cc8acf9795fea6de5442d254c5  m2_v4.pth
+8b54f5685eadf9e6dee795f7e89775a52ad6561e69fcba0e1d952abee3c3cde6  nb04.pth
+7e2c697736313fcdf264f0fa8c8c8b8e40f2edca29e1a0237cf5811980cebf68  r3_a4c.pth
+0ce2c5e332b9d4e9f079c9756a85772735c1647580952dd43e931551da6fd060  ultradino_ivc.pth
+b29d1e3de8c3bdddcf6f21df578921de1e739fd08f29c6864398692979a1b4f2  usfm.pth
+
+## sha256 - placeholder file that the organizer entry script copies.
+## It is not a model. The real checkpoints are the five files above.
+cf1363e6b119102b8220c7d722506e8dedaaf879809e0072b9ad65a8cbc50a1c  best_model.pth
+
+## Note: the first comment line of Dockerfile, and one in requirements.txt, name an earlier
+## 22.95 candidate. That text is stale. Both files are left unedited so these md5s match the
+## context the image was built from; what defines the system is the weight hashes above and
+## the fusion constants in model.py.
+
+## md5 - code, expected at /app/
+## predict.py is byte-identical to the organizer entry script. Any change to it
+## would be a rule violation, so it is listed first.
+82210b7388968ec2addddae519528ab9  predict.py
+03aac0d856f694ccec2404b990ecdaf6  model.py
+740e2271280167fa9516f08c1cd50834  requirements.txt
+7ba573301cbc0e666f89be945d14a279  Dockerfile
+
+## sha256 - reference prediction file shipped in this directory.
+## These are the 619 validation predictions that scored avg MRE 22.5822 on the
+## public leaderboard. It is our own output, not organizer ground truth.
+2bf2d177c7befc60933c2eed1ec8699fdd7e6584f0257a3b7d4c8271decd3a33  oracle_d7.json

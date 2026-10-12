@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: "If you use this code, please cite the paper below."
 title: "BloomMeasure: multi-task ultrasound landmark detection (FUB 2026 code release)"
-version: 1.1.0
+version: 1.1.1
 date-released: 2026-10-12
 license: MIT
 repository-code: "https://github.com/RodrigoMedellinRobles/FUChallenge_BloomMeasure"

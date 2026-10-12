@@ -1,0 +1,33 @@
+ab_target:
+  dark_mre: 18.33
+  gate_strong_win: 18.1
+  gate_wash: 18.4
+  run: NB00 18.33 DARK leader
+attribution_target: "Isolate Confidence-only knob from FAILED NB01 bundle (FP+Conf).\
+  \ NB04 \u2264 18.33 \u2192 Confidence is safe (FP was culprit). NB04 > 18.33 \u2192\
+  \ Confidence is the culprit."
+conf_max_samples_per_task: 256
+conf_quantile: 0.25
+ema_decay: 0.999
+enable_confidence: true
+enable_unimatch: true
+encoder_lr: 1.0e-05
+engine: vendored nb04_train_unimatch_conf_only.py (LP-FT stage 2 + ModelEmaV3 0.999
+  + UniMatch v2 cons + per-task Confidence mask)
+freeze_encoder: false
+head_lr: 5.0e-05
+init_from_ckpt: <repo_root>/experiments/02_m0_dinov2_SEMISUPERVISED/checkpoints/04_unimatch_conf_only_stage1_heads_only.pth
+lambda_cons_max: 0.5
+lambda_ramp_epochs: 7
+leaky: false
+model_save_path: <repo_root>/experiments/02_m0_dinov2_SEMISUPERVISED/checkpoints/04_unimatch_conf_only_stage2_unfreeze.pth
+num_epochs: 35
+num_workers_unlabeled: 4
+preprocess: clahe_clip_sharpen_speckle
+run_name: 04_unimatch_conf_only_stage2_unfreeze
+stage: 2
+train_split_csv: experiments/SPLITS/train.csv
+unlabeled_batch_size: 4
+unlabeled_strong_preprocess: ssl_strong_v1
+unlabeled_weak_preprocess: ssl_weak_v1
+val_split_csv: experiments/SPLITS/internal_val.csv

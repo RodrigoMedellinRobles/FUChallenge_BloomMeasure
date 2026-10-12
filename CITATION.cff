@@ -25,6 +25,9 @@ preferred-citation:
       given-names: Flavio A.
     - family-names: Bukhari
       given-names: Mohammad A.
-  collection-title: "MICCAI 2026 Workshop on Medical Ultrasound (MWM 2026)"
+  collection-title: "Medical Image Computing and Computer Assisted Intervention -- MICCAI 2026 Workshops and Challenges"
+  publisher:
+    name: "Springer Nature Switzerland"
   year: 2026
-  notes: "paper 92"
+  url: "https://papers.miccai.org/miccai-2026-sat/FoundUS_092.html"
+  notes: "LNCS 17261. Foundation Model Challenge for Ultrasound Biometry (FoundUS) satellite event, paper 92. Open-access PDF: https://papers.miccai.org/miccai-2026-sat/paper/FoundUS_092.pdf. DOI pending."

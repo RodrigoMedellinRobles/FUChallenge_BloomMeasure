@@ -39,7 +39,9 @@ This repository is the public release of the code in `docker/` and `training_cod
 
 ## Paper
 
-Accepted at MWM 2026 as submission 92. The camera-ready was sent on 2026-08-11 through OpenReview. It states twice, in section 1 and section 6, that the system placed second in the validation phase. That was the public standing when it was written; the final standings are the ones in the repository README.
+Published as paper 92 of the Foundation Model Challenge for Ultrasound Biometry (FoundUS) satellite event, in the MICCAI 2026 Workshops and Challenges proceedings (LNCS 17261, Springer; DOI pending). Open-access page: https://papers.miccai.org/miccai-2026-sat/FoundUS_092.html. OpenReview: https://openreview.net/forum?id=P9ojyliHnQ. The camera-ready was sent on 2026-08-11 through OpenReview. It states twice, in section 1 and section 6, that the system placed second in the validation phase. That was the public standing when it was written; the final standings are the ones in the repository README.
+
+The abstract shown on the open-access web page is the one of the originally accepted submission (a single model at MRE 24.28); the PDF linked from that page is the camera-ready, which describes the five-member ensemble at 22.58 and matches this repository.
 
 ## Appendix: the clarification we asked for
 

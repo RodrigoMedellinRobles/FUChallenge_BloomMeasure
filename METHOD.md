@@ -5,7 +5,8 @@ This document describes what each model is, how they are combined, and which par
 system carry a fitted parameter. The code that implements everything below is `docker/model.py`
 plus `docker/vendor/`. The corresponding paper is "Multi-Task Landmark Detection for Fetal and
 Cardiac Ultrasound Biometry under Label Scarcity" (Medellin-Robles, Juarez-Castro, Bukhari),
-accepted at MWM 2026, the MICCAI 2026 workshop, paper 92.
+published in the MICCAI 2026 Workshops and Challenges proceedings (FoundUS satellite event,
+paper 92), open access at https://papers.miccai.org/miccai-2026-sat/FoundUS_092.html.
 
 ## 1. Shared substrate
 

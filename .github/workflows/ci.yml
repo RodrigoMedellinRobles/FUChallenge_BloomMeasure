@@ -1,0 +1,41 @@
+name: ci
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: pip install numpy pyyaml
+      - name: Compile Python sources
+        run: python -m compileall -q docker training_code verification
+      - name: Self-check prediction comparator
+        run: python verification/compare_to_oracle.py --pred verification/oracle_d7.json --oracle verification/oracle_d7.json
+      - name: Verify submitted Docker file checksums
+        shell: bash
+        run: |
+          python - <<'EOF'
+          import hashlib
+          import pathlib
+          import re
+
+          checksums = pathlib.Path("verification/CHECKSUMS.txt").read_text()
+          expected = {
+              name: digest
+              for digest, name in re.findall(r"^([0-9a-f]{32})  (\S+)$", checksums, re.MULTILINE)
+          }
+          for name in ("predict.py", "model.py", "requirements.txt", "Dockerfile"):
+              actual = hashlib.md5((pathlib.Path("docker") / name).read_bytes()).hexdigest()
+              if actual != expected.get(name):
+                  raise SystemExit(f"md5 mismatch for {name}: {actual} != {expected.get(name)}")
+          EOF
+      - name: Validate citation metadata
+        run: python -c "import yaml,sys; yaml.safe_load(open('CITATION.cff'))"

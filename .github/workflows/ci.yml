@@ -5,6 +5,9 @@ on:
     branches: [main, develop]
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -36,6 +39,29 @@ jobs:
               actual = hashlib.md5((pathlib.Path("docker") / name).read_bytes()).hexdigest()
               if actual != expected.get(name):
                   raise SystemExit(f"md5 mismatch for {name}: {actual} != {expected.get(name)}")
+
+          inventory = pathlib.Path("docker/vendor/INVENTORY.md").read_text()
+          shipped_section = inventory.split("## On the inference import path (shipped here)", 1)[1]
+          shipped_section = shipped_section.split("## md5 of every module in the image, as built", 1)[1]
+          vendor_root = pathlib.Path("docker/vendor")
+          for digest, name in re.findall(r"^([0-9a-f]{32})  (\S+)$", shipped_section, re.MULTILINE):
+              path = vendor_root / name
+              if path.exists():
+                  actual = hashlib.md5(path.read_bytes()).hexdigest()
+                  if actual != digest:
+                      raise SystemExit(f"md5 mismatch for {path}: {actual} != {digest}")
+
+          checkpoint_lines = {
+              f"{digest}  {name}"
+              for digest, name in re.findall(r"^([0-9a-f]{64})  (\S+\.pth)$", checksums, re.MULTILINE)
+              if name != "best_model.pth"
+          }
+          weights_lines = {
+              line for line in pathlib.Path("verification/weights.sha256").read_text().splitlines()
+              if line
+          }
+          if checkpoint_lines != weights_lines:
+              raise SystemExit("verification/weights.sha256 does not match checkpoint hashes")
           EOF
       - name: Validate citation metadata
         run: python -c "import yaml,sys; yaml.safe_load(open('CITATION.cff'))"

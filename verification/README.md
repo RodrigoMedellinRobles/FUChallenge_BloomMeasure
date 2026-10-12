@@ -1,6 +1,6 @@
 # What is in this directory
 
-Three files, for one purpose: this lets anyone confirm that the code in this repository is the code
+Four files, for one purpose: this lets anyone confirm that the code in this repository is the code
 that ran inside the submitted image.
 
 **`CHECKSUMS.txt`** holds the SHA-256 of the five model checkpoints and the md5 of the four code
@@ -8,9 +8,11 @@ files in `docker/`. The checkpoints are not shipped, so these hashes are the onl
 system has here. Read them out of the image with
 
     docker run --rm --entrypoint sh flajucas/fu-biometry:v1.0.0 \
-      -c 'md5sum /app/predict.py /app/model.py && sha256sum /app/weights/*.pth'
+      -c 'md5sum /app/predict.py /app/model.py /app/requirements.txt && sha256sum /app/weights/*.pth'
 
 The `predict.py` md5 should equal the organizer entry script; ours was never modified.
+
+**`weights.sha256`** is the five checkpoint lines of `CHECKSUMS.txt` in `sha256sum -c` format, for use after downloading the weights.
 
 **`oracle_d7.json`** is our own output: the 619 predictions our system produced on the public
 validation set, which scored average MRE 22.5822. It contains no ground truth. Several code

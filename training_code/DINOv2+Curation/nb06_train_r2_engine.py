@@ -102,7 +102,7 @@ while not (REPO / "pyproject.toml").exists():
 os.chdir(REPO)
 
 # champion engine dir (import its verbatim HC@700 patches) + shared src + baseline + nb04
-CHAMP_DIR = REPO / "experiments" / "experiments_alphonse" / "20_hc_res700"
+CHAMP_DIR = REPO / "experiments" / "experiments_collaborator" / "20_hc_res700"
 for _p in (
     str(CHAMP_DIR),
     str(REPO / "experiments" / "_shared_src"),

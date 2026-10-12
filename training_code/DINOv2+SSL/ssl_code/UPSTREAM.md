@@ -2,7 +2,7 @@
 
 The self-supervised stage of DINOv2+SSL was run with the public UltraDINO release,
 "General methods make great domain-specific foundation models" (MICCAI 2025), which is itself a
-fork of Meta's DINOv2. It is Apache 2.0; the licence travels with this directory.
+fork of Meta's DINOv2. It is Apache 2.0; the license travels with this directory.
 
 We did not modify the training code. Our changes were configuration files under
 `dinov2/configs/train/`, and the one that produced the shipped checkpoint is included here:

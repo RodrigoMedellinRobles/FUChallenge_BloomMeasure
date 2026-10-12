@@ -1,6 +1,6 @@
 """run_nb04v3_a4c_no_ssl.py — M1-R3 driver (2-stage LP-FT chain).
 
-Lives in experiments/experiments_alphonse/. ALL outputs (run logs, config
+Lives in experiments/experiments_collaborator/. ALL outputs (run logs, config
 snapshots, checkpoints) are written INSIDE this folder. Shared READ-ONLY inputs
 (SPLITS, the pinned unlabeled corpus, baseline + _shared_src code) are read from
 the repo root but never modified.
@@ -31,8 +31,8 @@ honest gate, so the A/B is clean against the SAME 18.2524 anchor.
 Launch (manual):
   cd "$FU_BIOMETRY_ROOT"  # Set FU_BIOMETRY_ROOT to the repository root.
   nohup "${PYTHON:-python3}" \
-      experiments/experiments_alphonse/run_nb04v3_a4c_no_ssl.py \
-      > experiments/experiments_alphonse/runs/04v3_a4c_no_ssl_v1_0628/chain.log 2>&1 &
+      experiments/experiments_collaborator/run_nb04v3_a4c_no_ssl.py \
+      > experiments/experiments_collaborator/runs/04v3_a4c_no_ssl_v1_0628/chain.log 2>&1 &
 """
 import io
 import json
@@ -41,7 +41,7 @@ import time
 from pathlib import Path
 
 _here = Path(__file__).resolve().parent
-ALF_DIR = _here                              # experiments/experiments_alphonse
+ALF_DIR = _here                              # experiments/experiments_collaborator
 REPO = _here
 while not (REPO / "pyproject.toml").exists():
     if REPO == REPO.parent:
@@ -51,7 +51,7 @@ import os
 os.chdir(REPO)  # engine uses relative DATA_ROOT_PATH="data" / SPLITS paths
 
 BASELINE_DIR = REPO / "Foundation-Model-for-Ultrasound-Biometry" / "baseline"
-# engine lives HERE in experiments_alphonse; shared code read from repo root
+# engine lives HERE in experiments_collaborator; shared code read from repo root
 for _p in (
     str(ALF_DIR),
     str(REPO / "experiments" / "_shared_src"),
@@ -87,7 +87,7 @@ STAGE2_EPOCHS, STAGE2_ENC_LR, STAGE2_HEAD_LR = 35, 1e-5, 5e-5
 
 OVERWRITE, LEAKY = False, False
 
-# ---- ALL outputs inside experiments_alphonse ----
+# ---- ALL outputs inside experiments_collaborator ----
 RUN_ROOT = ALF_DIR / "runs" / "04v3_a4c_no_ssl_v1_0628"
 CKPT_DIR = ALF_DIR / "checkpoints"
 STAGE1_RUN_DIR = RUN_ROOT / STAGE1_NAME

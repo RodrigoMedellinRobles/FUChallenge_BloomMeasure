@@ -16,7 +16,7 @@ COLD-START stock DINOv2, cardiac loaded FLAT) and changes exactly ONE thing: HC'
 labeled supervised resolution 518 -> 700. So the A/B isolates HC@700 against the
 running LB leader (24.28), on the SAME flat-cardiac footing as the deployment test.
 
-PROVENANCE OF THE 24.28 CHAMPION (authoritative: alfonso_7/results/config_snapshot.yaml)
+PROVENANCE OF THE 24.28 CHAMPION (authoritative: collaborator_7/results/config_snapshot.yaml)
 --------------------------------------------------------------------------------------
   * train/val CSV = experiments/SPLITS/{train,internal_val}.csv (leaky=false), the
     audited 5407/1361 split (split_metadata.json build 2026-05-19). Cardiac paths are

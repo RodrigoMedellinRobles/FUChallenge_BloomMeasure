@@ -26,7 +26,7 @@ Two stages, in order:
 
 Stage 1 ran on the public UltraDINO release, which is a fork of Meta's DINOv2 under Apache 2.0. We
 did not modify that code, so shipping it back would be several thousand files of somebody else's
-work. What is here is the licence, a note recording which release it was and that it was
+work. What is here is the license, a note recording which release it was and that it was
 unmodified, and the one configuration file we wrote, which is what actually defines our run.
 
 The config sits under `ssl_code/dinov2/configs/train/` rather than at the top of this directory

@@ -4,6 +4,17 @@ All notable changes to this project are documented in this file. The format is b
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-12
+
+### Changed
+
+- README reordered and extended with runtime, input/output format and host-run instructions.
+- LICENSE reduced to verbatim MIT with third-party terms moved to THIRD_PARTY_NOTICES.md, including the organizer-baseline carve-out.
+- Broken cross-references fixed.
+- CI now verifies vendored module md5 and the weights hash list.
+- Collaborator directory names neutralized in training records.
+- Wording fixed in training and verification READMEs.
+
 ## [1.0.0] - 2026-10-12
 
 ### Added
@@ -16,5 +27,6 @@ All notable changes to this project are documented in this file. The format is b
 - Third-party notices.
 - CI.
 
-[Unreleased]: https://github.com/RodrigoMedellinRobles/FUChallenge_BloomMeasure/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/RodrigoMedellinRobles/FUChallenge_BloomMeasure/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/RodrigoMedellinRobles/FUChallenge_BloomMeasure/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/RodrigoMedellinRobles/FUChallenge_BloomMeasure/releases/tag/v1.0.0

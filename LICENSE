@@ -19,17 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-Third-party code included in this repository, under its own license:
-
-- training_code/DINOv2+SSL/ssl_code/  -- the UltraDINO / DINOv2 self-supervised
-  training code, Apache License 2.0. Its LICENSE file ships with it. We used it to run the
-  in-domain pre-training stage of the ultradino_ivc member.
-- docker/vendor/  -- our own code plus adapters around the official challenge baseline
-  (github.com/lijiake2408/Foundation-Model-for-Ultrasound-Biometry) and the public USFM
-  release. Encoder weights (DINOv2, USFM) are distributed by their original authors under
-  their own terms and are not redistributed here.
-
-See THIRD_PARTY_NOTICES.md for details.

@@ -35,11 +35,11 @@ training run.
 
 `splits/train.csv` and `splits/internal_val.csv` define the labeled split, 5,386 images for
 training and 1,357 held out for model selection. They carry image paths, task ids and subject ids
-only; the landmark annotations are yours and are not redistributed here.
+only; the landmark annotations belong to the organizers and are not redistributed here.
 
 `DINOv2+Curation/summary.json` is the record of how the unlabeled corpus was routed: 27,122 images added as
 pseudo-labels, 131,330 used for consistency only, 32,717 discarded, with a per-task breakdown.
-The compliance section of the repository `README.md` cites those numbers, and this is the file
+`docs/COMPLIANCE.md` and `METHOD.md` section 3 cite those numbers, and this is the file
 behind them.
 
 `DINOv2+SSL/manifest_187k.csv.xz` is the corpus list for the self-supervised stage: 187,744
@@ -54,12 +54,16 @@ produced under. It ships so the disclosure is checkable rather than asserted.
 
 ## Notes if you rerun any of this
 
-The split changed size once. On 2026-07-23 you withdrew 25 fetal_femur images as invalid, taking
+The split changed size once. On 2026-07-23 the organizers withdrew 25 fetal_femur images as invalid, taking
 the labeled pool from 6,768 to 6,743 and the split from 5,407 / 1,361 to the 5,386 / 1,357 shipped
 here. Members trained before that date saw the larger version; no image moved between the two
 portions.
 
-Random seed 42 throughout.
+Random seed 42 throughout the supervised stages. The self-supervised stage of DINOv2+SSL ran the upstream code, whose data sampler does not consume the run seed, so that stage is not bit-exact across reruns (noted in the shipped configuration file).
+
+`VAL_ORG` in some engine assertions and `_corpus_nb04v2_no_valorg` in a config snapshot refer to a manifest of public validation images that was once considered as extra unlabeled data. No shipped member used it, and the engines assert its absence from the unlabeled pool.
+
+Directory names such as `experiments_collaborator` in the config snapshots are internal run locations of a team member, kept so the records stay traceable.
 
 Two notebooks are not shipped. The one that drove DINOv2+Cons held stored outputs from an execution that
 predates both the split correction and the final stage-2 run, so it described a different run than

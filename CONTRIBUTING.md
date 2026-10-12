@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This code release must remain reproducible. The `main` branch tagged `v1.0.0` corresponds byte-for-byte in `docker/` to Codabench submission 887183.
+This code release must remain reproducible. The hashed files in `docker/` (listed in `verification/CHECKSUMS.txt` and `docker/vendor/INVENTORY.md`) are byte-identical to their copies in the image of Codabench submission 887183.
 
 Do not edit `docker/predict.py`, `docker/model.py`, `docker/requirements.txt` or `docker/Dockerfile` unless the change is part of a new release with updated `verification/CHECKSUMS.txt`. Such a release is no longer the submitted system and must say so clearly.
 
@@ -10,7 +10,7 @@ Do not edit `docker/predict.py`, `docker/model.py`, `docker/requirements.txt` or
 
 This repository uses git-flow:
 
-- `main` is release-only and protected. Every commit is tagged `vX.Y.Z`. Merge into it only from `release/*` or `hotfix/*`, with `--no-ff`.
+- `main` is release-only. Every release merge is tagged `vX.Y.Z`. Branch protection (pull request required, `ci / test` check required) should be enabled on `main` in the repository settings. Merge into it only from `release/*` or `hotfix/*`, with `--no-ff`.
 - `develop` is the integration branch and the default pull-request target.
 - `feature/<short-slug>` starts from `develop` and returns to `develop` through a pull request.
 - `release/vX.Y.Z` starts from `develop`. Only version bumps, the changelog and documentation belong there. Merge it into `main`, tag it, and merge it back into `develop`.

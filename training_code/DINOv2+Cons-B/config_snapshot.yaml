@@ -11,11 +11,11 @@ exclude_cons_tasks:
 - A4C
 freeze_encoder: false
 head_lr: 5.0e-05
-init_from_ckpt: <repo_root>/experiments/experiments_alphonse/checkpoints/04v3_a4c_no_ssl_stage1_heads_only.pth
+init_from_ckpt: <repo_root>/experiments/experiments_collaborator/checkpoints/04v3_a4c_no_ssl_stage1_heads_only.pth
 lambda_cons_max: 0.5
 lambda_ramp_epochs: 7
 leaky: false
-model_save_path: <repo_root>/experiments/experiments_alphonse/checkpoints/04v3_a4c_no_ssl_stage2_unfreeze.pth
+model_save_path: <repo_root>/experiments/experiments_collaborator/checkpoints/04v3_a4c_no_ssl_stage2_unfreeze.pth
 num_epochs: 35
 num_workers_unlabeled: 4
 preprocess: clahe_clip_sharpen_speckle

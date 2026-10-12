@@ -30,3 +30,9 @@ statement of what it is.
 The header of `run_v4_umv2.sh` discusses a batch size of 96 and the learning-rate scaling that
 would follow. The variables below it set 32, which is what ran. The header is stale and we left the
 file unedited rather than risk touching a file that produced a shipped checkpoint.
+
+## Two things in `nb06_train_r2_engine.py` that need context
+
+Its module docstring describes the first version of the curation manifest (13,819 ambiguous, 1,575 outliers, 4,822 safe pseudo-labels, ground-truth weights in {1.0, 0.6, 0.25}). The shipped run used the third manifest recorded in `summary.json` (27,122 pseudo-labels, 131,330 consistency-only, 32,717 discarded) and every ground-truth row at weight 1.0 (`weight_gt_hist` in `summary.json`), as `METHOD.md` section 3 states. The docstring is left unedited as a run record.
+
+The docstring calls the internal validation split "leaky". That refers to the internal split used for checkpoint selection not being guaranteed subject-disjoint from training in the original labeled pool; it was used for selection only, and no public validation or test image was ever trained on. `summary.json`'s "IVC bypasses curation" means IVC uses the labeled-row cap described in `METHOD.md` section 3 instead of the five-signal route.

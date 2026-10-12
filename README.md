@@ -20,6 +20,75 @@ BloomMeasure is an ensemble of five landmark models. Their 64x64 heatmaps are av
 
 Code is released under the MIT License. Model weights are released as GitHub release assets (see Weights).
 
+## Quick start: run the submitted container
+
+```bash
+docker pull flajucas/fu-biometry:v1.0.0
+docker run --rm --gpus all --network none \
+  --memory 7g --cpus 4 --shm-size 2g \
+  -v /path/to/input:/input:ro -v /path/to/output:/output:rw \
+  -e GU_INPUT_DIR=/input -e GU_OUTPUT_DIR=/output \
+  flajucas/fu-biometry:v1.0.0
+```
+
+On 619 validation images this used 909 MiB of GPU memory, 1.97 GB of host memory and about four minutes. Input and output follow the challenge format through `GU_INPUT_DIR` and `GU_OUTPUT_DIR`.
+
+### Runtime
+
+The image is based on `pytorch/pytorch:2.3.1-cuda12.1-cudnn8-runtime` (Python 3.10, torch 2.3.1, CUDA 12.1). Other Python pins are in `docker/requirements.txt`. A GPU is used when available and the code falls back to CPU otherwise (`docker/model.py`).
+
+### Input and output format
+
+`GU_INPUT_DIR` must contain `test_metadata.csv` with columns `image_path,task_id,task_name,num_classes` (the same header as `training_code/splits/train.csv`, with `task_name` set to `Regression`) and one directory per task holding the images, named `<task>_test/` or `<task>/` (see `docker/predict.py`). The container writes `GU_OUTPUT_DIR/regression_predictions.json`, a list of records `{image_path, task_id, predicted_points_pixels}` where `predicted_points_pixels` is a flat list `[x1, y1, x2, y2, ...]` in original image pixels (see `docker/model.py`).
+
+### Run outside Docker
+
+`docker/predict.py` hardcodes container paths (`/app`, `/work`) and is not meant to run on a host. Instead, with `docker/weights/` populated and `docker/requirements.txt` plus torch 2.3.1 installed, run from inside `docker/`:
+
+```bash
+cd docker
+python3 -c "from model import Model; Model().predict(data_root='/path/to/data', output_dir='/path/to/out', batch_size=8)"
+```
+
+Here `data_root` holds `csv/*.csv` and `images/<task>/` as `docker/vendor/baseline/model.py` expects.
+
+## Weights
+
+The five checkpoints total 892 MB and are not in the git tree. Download the `nb04.pth`, `r3_a4c.pth`, `ultradino_ivc.pth`, `m2_v4.pth` and `usfm.pth` assets from the Releases page of this repository (the assets are attached to the latest release), then place them in `docker/weights/`. Alternatively, extract them from the public image:
+
+```bash
+cid=$(docker create flajucas/fu-biometry:v1.0.0)
+docker cp "$cid":/app/weights ./docker/weights
+docker rm "$cid"
+```
+
+Verify the files with:
+
+```bash
+(cd docker/weights && sha256sum -c ../../verification/weights.sha256)
+```
+
+With `docker/weights/` populated, `docker build -t bloommeasure docker/` runs to completion (the rebuilt image is functionally equivalent to the submitted one but not byte-identical, because `docker/vendor/` carries only the modules on the inference path; see `docker/vendor/INVENTORY.md`). `docker/best_model.pth` is a 1.3 kB stub required by the organizer entry script. Its payload says that the real weights are in `/app/weights/`.
+
+## Verify that this code is the submitted system
+
+Read the code and weight hashes from the image and compare them with `verification/CHECKSUMS.txt`:
+
+```bash
+docker run --rm --entrypoint sh flajucas/fu-biometry:v1.0.0 \
+  -c 'md5sum /app/predict.py /app/model.py /app/requirements.txt && sha256sum /app/weights/*.pth'
+```
+
+Compare fresh predictions with the reference output:
+
+```bash
+python3 verification/compare_to_oracle.py \
+  --pred /path/to/regression_predictions.json \
+  --oracle verification/oracle_d7.json
+```
+
+The recorded run has 619 of 619 records present, mean drift 0.0030 px and maximum drift 0.088 px. The residual is consistent with stored member heatmaps being float16 while live code computes in float32. The checker exits 0 below 0.5 px maximum drift, 1 below 3 px, 2 above that, and 3 on structural failure.
+
 ## Results
 
 | Task | MRE (px) | MAE |
@@ -35,7 +104,7 @@ Code is released under the MIT License. Model weights are released as GitHub rel
 | PSAX | 42.78 | 22.57 |
 | **Average** | **22.6033** | **27.3467** |
 
-The test average of 22.60 and public validation average of 22.5822 are almost the same, but that is a coincidence rather than evidence that the container reproduced the validation behavior.
+The test average of 22.60 and public validation average of 22.5822 are almost the same, but that is a coincidence rather than evidence that test and validation behave the same per task; the per-task breakdown shows two different regimes.
 
 | Task | MRE on validation | MRE on test | Difference |
 |---|---:|---:|---:|
@@ -49,23 +118,7 @@ The test average of 22.60 and public validation average of 22.5822 are almost th
 | A4C | 24.37 | 24.31 | -0.06 |
 | IVC | 22.20 | 22.15 | -0.05 |
 
-The deficit is concentrated rather than spread. Against the best test-board entry, fetal_femur accounts for 39% of the per-task MRE deficit, and fetal_femur, PSAX and A4C together account for 82%. Parameter error is dominated by HC and FA, where angle handling is weakest.
-
 Both leaderboards score the same predictions. Leaderboard A normalizes each metric per task across teams and averages the nine normalized values, producing MRE 0.21136, MAE 0.36310 and final score 0.28723. Leaderboard B averages raw metrics first and normalizes the two averages across teams, producing normalized values 0.08931 and 0.32957 and final score 0.20944.
-
-## Repository layout
-
-```text
-docker/                  Submitted inference code and vendored runtime modules
-training_code/           Recipes and artifacts for the five ensemble members
-verification/            Checksums, reference predictions and comparison tool
-METHOD.md                Detailed method description
-docs/COMPLIANCE.md       Challenge-rules compliance and organizer clarification
-THIRD_PARTY_NOTICES.md   Origins and licenses of third-party components
-CONTRIBUTING.md          Branching, commits and pull-request requirements
-CHANGELOG.md             Release history
-CITATION.cff             Machine-readable citation metadata
-```
 
 ## Names
 
@@ -84,55 +137,21 @@ Paper names communicate model variants. Code names preserve the actual checkpoin
 | DINOv2 ViT-S/14, LVD-142M | publicly released by Meta AI | encoder initialization for four members |
 | USFM, BEiT-B/16 ultrasound | publicly released with the USFM paper (Jiao et al., Medical Image Analysis 2024) | encoder initialization for the USFM member |
 
-## Quick start: run the submitted container
+## Repository layout
 
-```bash
-docker pull flajucas/fu-biometry:v1.0.0
-docker run --rm --gpus all --network none \
-  --memory 7g --cpus 4 --shm-size 2g \
-  -v /path/to/input:/input:ro -v /path/to/output:/output:rw \
-  -e GU_INPUT_DIR=/input -e GU_OUTPUT_DIR=/output \
-  flajucas/fu-biometry:v1.0.0
+```text
+docker/                  Submitted inference code and vendored runtime modules
+docker/submission/submission.json
+                         Codabench submission descriptor, byte for byte as uploaded
+training_code/           Recipes and artifacts for the five ensemble members
+verification/            Checksums, reference predictions and comparison tool
+METHOD.md                Detailed method description
+docs/COMPLIANCE.md       Challenge-rules compliance and organizer clarification
+THIRD_PARTY_NOTICES.md   Origins and licenses of third-party components
+CONTRIBUTING.md          Branching, commits and pull-request requirements
+CHANGELOG.md             Release history
+CITATION.cff             Machine-readable citation metadata
 ```
-
-On 619 validation images this used 909 MiB of GPU memory, 1.97 GB of host memory and about four minutes. Input and output follow the challenge format through `GU_INPUT_DIR` and `GU_OUTPUT_DIR`.
-
-## Weights
-
-The five checkpoints total 892 MB and are not in the git tree. Download the `nb04.pth`, `r3_a4c.pth`, `ultradino_ivc.pth`, `m2_v4.pth` and `usfm.pth` assets from this repository's GitHub release `v1.0.0`, then place them in `docker/weights/`. Alternatively, extract them from the public image:
-
-```bash
-cid=$(docker create flajucas/fu-biometry:v1.0.0)
-docker cp "$cid":/app/weights ./docker/weights
-docker rm "$cid"
-```
-
-Verify the files with:
-
-```bash
-(cd docker/weights && sha256sum -c ../../verification/weights.sha256)
-```
-
-With `docker/weights/` populated, `docker build -t bloommeasure docker/` runs to completion. `docker/best_model.pth` is a 1.3 kB stub required by the organizer entry script. Its payload says that the real weights are in `/app/weights/`.
-
-## Verify that this code is the submitted system
-
-Read the code and weight hashes from the image and compare them with `verification/CHECKSUMS.txt`:
-
-```bash
-docker run --rm --entrypoint sh flajucas/fu-biometry:v1.0.0 \
-  -c 'md5sum /app/predict.py /app/model.py && sha256sum /app/weights/*.pth'
-```
-
-Compare fresh predictions with the reference output:
-
-```bash
-python3 verification/compare_to_oracle.py \
-  --pred /path/to/regression_predictions.json \
-  --oracle verification/oracle_d7.json
-```
-
-The recorded run has 619 of 619 records present, mean drift 0.0030 px and maximum drift 0.088 px. The residual is consistent with stored member heatmaps being float16 while live code computes in float32. The checker exits 0 below 0.5 px maximum drift, 1 below 3 px, 2 above that, and 3 on structural failure.
 
 ## Training
 
@@ -145,6 +164,8 @@ The recorded run has 619 of 619 records present, mean drift 0.0030 px and maximu
 ## Known stale comments
 
 `docker/best_model.pth` is a 1.3 kB stub required because the organizer entry script copies that path unconditionally. The first comment in `docker/Dockerfile`, one line in `docker/requirements.txt`, and the header of `training_code/DINOv2+Curation/run_v4_umv2.sh` describe an earlier candidate; they remain untouched to preserve the submitted artifacts. Some headers use internal paths and the word "oracle" for the team's own reference predictions, not organizer ground truth.
+
+The header of `docker/model.py` refers to internal repository paths and calls the reference prediction file "the team's private-test oracle"; that phrase means the team's own reference predictions for the test submission (`verification/oracle_d7.json` is the validation counterpart), not access to any labels.
 
 ## Data
 

@@ -77,7 +77,7 @@ should not agree. This member enters the ensemble for one task only, fetal femur
 weights, supervised only, 512x512 with a 32x32 patch grid, mean and std both 0.5. It is the
 weakest member alone at 27.79, and that is not why it is in the ensemble. PSAX fails from a
 lack of in-domain information rather than from the decoder or the training signal, and an
-ultrasound pre-trained encoder moves that task from 42.16 to 34.58 px, and the same direction
+ultrasound pre-trained encoder moves that task from 42.16 to 34.58 px (hard-routed to USFM alone; the submitted 0.60 blend scores 34.53 on validation), and the same direction
 held every time we rebuilt it.
 
 ## 3. Curated semi-supervision, member m2_v4
@@ -87,6 +87,8 @@ not identical. Some are easy enough that the model's own prediction is a more in
 target than a consistency constraint, some are genuinely ambiguous, and some are broken
 (wrong subdomain, corrupted, filed under the wrong task) and hurt training under either
 treatment. We measure every image before training and route it.
+
+The self-supervised stage of DINOv2+SSL used 187,744 of these images, the rows that survived its own manifest build; the drop log for the 3,426 difference is in the image, not in this repository.
 
 A trained model is frozen and used only as an instrument. Every image is passed six times under
 photometric test-time augmentation (identity, gamma 0.85, gamma 1.15, brightness plus and minus
@@ -226,7 +228,7 @@ version. All semi-supervised training used the challenge
 unlabeled corpus only. Two publicly released pre-trained encoders were used as
 initialization: DINOv2 ViT-S/14 (LVD-142M) and USFM (BEiT-B/16, ultrasound). No external
 image dataset was added to training, and no additional annotation of any public data was
-produced. The compliance section of `README.md` states this rule by rule.
+produced. `docs/COMPLIANCE.md` states this rule by rule.
 
 ## 9. One implementation detail we chose to state
 
@@ -325,7 +327,7 @@ FA projection, gives 22.9527. The submitted system is 22.5822.
 
 ## 13. Limitations
 
-- The corruptions in section 4 are synthetic and are a proxy for acquisition degradation, not
+- The corruptions in sections 11 and 12 are synthetic and are a proxy for acquisition degradation, not
   the real shift.
 - Per-task counts in the internal analysis are small (PSAX 10 images, IVC 10), so individual
   magnitudes there are unreliable. What survives is direction and consistency.
@@ -334,3 +336,5 @@ FA projection, gives 22.9527. The submitted system is 22.5822.
   that bar, including several of our own earlier ones, does not support a conclusion. This is
   why the ensemble argument rests on the monotone trend across 31 subsets rather than on any
   one pairwise comparison.
+
+Final test results are in the repository `README.md`.

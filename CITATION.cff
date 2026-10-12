@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the paper below."
+title: "BloomMeasure: multi-task ultrasound landmark detection (FUB 2026 code release)"
+version: 1.0.0
+date-released: 2026-10-12
+license: MIT
+repository-code: "https://github.com/RodrigoMedellinRobles/FUChallenge_BloomMeasure"
+authors:
+  - family-names: Medellin-Robles
+    given-names: Rodrigo
+    affiliation: Bloom Standard Inc.
+  - family-names: Juarez-Castro
+    given-names: Flavio A.
+    affiliation: Bloom Standard Inc.
+  - family-names: Bukhari
+    given-names: Mohammad A.
+    affiliation: Bloom Standard Inc.
+preferred-citation:
+  type: conference-paper
+  title: "Multi-Task Landmark Detection for Fetal and Cardiac Ultrasound Biometry under Label Scarcity"
+  authors:
+    - family-names: Medellin-Robles
+      given-names: Rodrigo
+    - family-names: Juarez-Castro
+      given-names: Flavio A.
+    - family-names: Bukhari
+      given-names: Mohammad A.
+  collection-title: "MICCAI 2026 Workshop on Medical Ultrasound (MWM 2026)"
+  year: 2026
+  notes: "paper 92"

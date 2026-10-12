@@ -1,0 +1,11 @@
+# torch / torchvision come from the base image — do NOT reinstall (avoids CUDA mismatch).
+# Everything else pinned to the exact versions that produced the validated 22.95 candidate.
+timm==1.0.26
+albumentations==2.0.8
+opencv-python-headless==4.11.0.86
+numpy==1.26.4
+pandas==2.2.3
+scipy==1.15.3
+tqdm==4.67.1
+einops==0.8.2
+pillow==12.0.0

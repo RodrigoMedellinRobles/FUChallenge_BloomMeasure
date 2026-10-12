@@ -1,0 +1,31 @@
+{
+  "best_val_mre": 19.6243452211021,
+  "best_epoch": 29,
+  "epochs": 35,
+  "ema_decay": 0.999,
+  "ema_active": true,
+  "in_chans": 1,
+  "preprocess_key": "sharpen_speckle_1ch_ours_noclahe",
+  "encoder_init": "vit_small_patch14_dinov2.lvd142m",
+  "encoder_init_from_ckpt": null,
+  "run_tag": "04_nb01b_dapt_lpft_ema_seed42_noclahe_ep40",
+  "stage": 2,
+  "preprocess": "sharpen_speckle_1ch_ours_noclahe",
+  "init_from_ckpt": "<repo_root>/experiments/04_dinov2_ultradinoLIKE/checkpoints/04_nb01b_dapt_lpft_ema_seed42_noclahe_ep40_stage1.pth",
+  "encoder_lr": 1e-05,
+  "head_lr": 5e-05,
+  "wall_time_sec": 6141.1,
+  "checkpoint": "<repo_root>/experiments/04_dinov2_ultradinoLIKE/checkpoints/04_nb01b_dapt_lpft_ema_seed42_noclahe_ep40.pth",
+  "ours_patch_1ch": {
+    "in_chans": 1,
+    "preprocess_key": "sharpen_speckle_1ch_ours_noclahe",
+    "ours_mean_gray": 0.10659946925280621,
+    "ours_std_gray": 0.16533788546753694,
+    "ours_stats_source": "<repo_root>/experiments/04_dinov2_ultradinoLIKE/ours_norm_stats.json",
+    "fix_no_clahe": "CLAHE + percentile-clip dropped to match SSL encoder raw-grayscale pretrain distribution",
+    "encoder_init_from_ckpt": "<repo_root>/experiments/04_dinov2_ultradinoLIKE/checkpoints/ultradino_ours_vits14_seed42_ep40.pth",
+    "fix_ep40_reextract": "encoder re-extracted from training_114999 (ep~39.2), not the buggy ep~34 training_99999"
+  },
+  "REGRESSION_VS_STAGE1": false,
+  "ab_candidate_ckpt": "<repo_root>/experiments/04_dinov2_ultradinoLIKE/checkpoints/04_nb01b_dapt_lpft_ema_seed42_noclahe_ep40.pth"
+}

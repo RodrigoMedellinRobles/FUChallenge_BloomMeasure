@@ -1,0 +1,29 @@
+ab:
+  anchor: plain nb04 conf-only 18.2524 DARK-518
+  one_knob: exclude_cons_tasks () -> (A4C,)
+conf_quantile: 0.25
+ema_decay: 0.999
+enable_confidence: true
+enable_unimatch: true
+encoder_lr: 1.0e-05
+engine: 'nb04v3_train_a4c_no_ssl.py (R3: A4C removed from consistency loss)'
+exclude_cons_tasks:
+- A4C
+freeze_encoder: false
+head_lr: 5.0e-05
+init_from_ckpt: <repo_root>/experiments/experiments_alphonse/checkpoints/04v3_a4c_no_ssl_stage1_heads_only.pth
+lambda_cons_max: 0.5
+lambda_ramp_epochs: 7
+leaky: false
+model_save_path: <repo_root>/experiments/experiments_alphonse/checkpoints/04v3_a4c_no_ssl_stage2_unfreeze.pth
+num_epochs: 35
+num_workers_unlabeled: 4
+preprocess: clahe_clip_sharpen_speckle
+run_name: 04v3_a4c_no_ssl_stage2_unfreeze
+stage: 2
+train_split_csv: experiments/SPLITS/train.csv
+unlabeled_batch_size: 4
+unlabeled_data_root: <repo_root>/data/_corpus_nb04v2_no_valorg
+unlabeled_strong_preprocess: ssl_strong_v1
+unlabeled_weak_preprocess: ssl_weak_v1
+val_split_csv: experiments/SPLITS/internal_val.csv

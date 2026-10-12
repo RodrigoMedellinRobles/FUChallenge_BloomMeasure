@@ -4,6 +4,8 @@ All notable changes to this project are documented in this file. The format is b
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-12
+
 ### Changed
 
 - README reordered and extended with runtime, input/output format and host-run instructions.
@@ -25,5 +27,6 @@ All notable changes to this project are documented in this file. The format is b
 - Third-party notices.
 - CI.
 
-[Unreleased]: https://github.com/RodrigoMedellinRobles/FUChallenge_BloomMeasure/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/RodrigoMedellinRobles/FUChallenge_BloomMeasure/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/RodrigoMedellinRobles/FUChallenge_BloomMeasure/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/RodrigoMedellinRobles/FUChallenge_BloomMeasure/releases/tag/v1.0.0

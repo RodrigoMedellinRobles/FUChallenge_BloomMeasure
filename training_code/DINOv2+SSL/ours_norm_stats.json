@@ -1,0 +1,24 @@
+{
+  "mean_rgb": [
+    0.10546454119773689,
+    0.10766590523636965,
+    0.10666796132431203
+  ],
+  "std_rgb": [
+    0.16398927662718354,
+    0.16589146290854437,
+    0.1661173042142973
+  ],
+  "mean_gray": 0.10659946925280621,
+  "std_gray": 0.16533788546753694,
+  "n_pixels": 50375952732,
+  "n_images": 187743,
+  "n_failed": 1,
+  "input_size": 518,
+  "resize_interp": "cv2.INTER_LINEAR",
+  "computed_from": "experiments/04_dinov2_ultradinoLIKE/manifest_187k.csv",
+  "computed_at": "2026-05-24T14:07:34+00:00",
+  "git_sha": "03cd279",
+  "algorithm": "Welford's online mean+variance, per-channel + grayscale-collapsed, vectorized",
+  "notes": "For 1ch greyscale norm (folder 04 nb00 + nb01) = Normalize(mean=(mean_gray,), std=(std_gray,)) \u2192 input shape (B, 1, H, W). For 3ch ImageNet-replicated (back-compat) = Normalize(mean=(mean_gray,)*3, std=(std_gray,)*3) \u2192 input shape (B, 3, H, W). Folder 04 uses 1ch per PROGRESSION_PLAN_v3 \u00a73.2 fix A' (faithful UltraDINO)."
+}

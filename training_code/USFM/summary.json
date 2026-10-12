@@ -1,0 +1,14 @@
+{
+  "best_val_mre": 19.370902620996237,
+  "best_epoch": 33,
+  "epochs": 35,
+  "ema_decay": 0.999,
+  "ema_active": true,
+  "encoder": "USFM_beit_base_patch16",
+  "input_size": 512,
+  "wall_time_sec": 10378.3,
+  "run_tag": "00_usfm_beit05_stage2_unfreeze",
+  "variant": "beit05",
+  "preprocess": "clahe_clip_sharpen_speckle_beit05",
+  "stage": 2
+}

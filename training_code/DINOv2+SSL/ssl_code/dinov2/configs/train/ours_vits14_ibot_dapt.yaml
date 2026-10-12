@@ -1,0 +1,183 @@
+# [OURS PATCH 2026-05-24] folder-04 iBOT-DAPT recipe for our 187k US corpus.
+#
+# Recipe = UltraDINO faithful (iBOT + DINO + KoLeo, uniform sampler,
+# DataAugmentationOURUS = DataAugmentationDINUS port w/ OURS_MEAN/STD).
+# Params = OUR encoder (vit_small patch=14 LVD-142M warm-start, in_chans=1,
+# no register tokens) per the 2026-05-24 "recipe-not-params" decision.
+#
+# Inherits dinov2/configs/ssl_default_config.yaml defaults; this file overrides
+# only what folder-04 needs.
+#
+# See md_files/experiments/04_dinov2_ultradinoLIKE/CONTEXT.md §3.2 for the
+# canonical parameter justification + provenance.
+
+MODEL:
+  # Empty WEIGHTS: timm pretrained loaded via student.pretrained_weights below.
+  WEIGHTS: ''
+
+# BF16 mixed precision (override UltraDINO from_scratch fp16) for Blackwell.
+# [HIGH 7 adv fix 2026-05-24] grad_scaler MUST be false with bf16 (scaler is
+# fp16-overflow guard; bf16 dynamic range matches fp32 → no overflow). Leaving
+# it true makes the optimizer step run unscale_/scaler.step on bf16 grads =
+# extra work + risk of erroneous step-skip on stray inf.
+compute_precision:
+  grad_scaler: false
+  teacher:
+    backbone:
+      sharding_strategy: NO_SHARD
+      mixed_precision:
+        param_dtype: bf16
+        reduce_dtype: bf16
+        buffer_dtype: fp32
+    dino_head:
+      sharding_strategy: NO_SHARD
+      mixed_precision:
+        param_dtype: bf16
+        reduce_dtype: bf16
+        buffer_dtype: fp32
+    ibot_head:
+      sharding_strategy: NO_SHARD
+      mixed_precision:
+        param_dtype: bf16
+        reduce_dtype: bf16
+        buffer_dtype: fp32
+  student:
+    backbone:
+      sharding_strategy: NO_SHARD
+      mixed_precision:
+        param_dtype: bf16
+        reduce_dtype: bf16
+        buffer_dtype: fp32
+    dino_head:
+      sharding_strategy: NO_SHARD
+      mixed_precision:
+        param_dtype: bf16
+        reduce_dtype: fp32
+        buffer_dtype: fp32
+    ibot_head:
+      sharding_strategy: NO_SHARD
+      mixed_precision:
+        param_dtype: bf16
+        reduce_dtype: fp32
+        buffer_dtype: fp32
+
+# DINO + iBOT + KoLeo losses (UltraDINO from_scratch defaults).
+dino:
+  loss_weight: 1.0
+  head_n_prototypes: 65536
+  head_bottleneck_dim: 256
+  head_nlayers: 3
+  head_hidden_dim: 2048
+  koleo_loss_weight: 0.1
+
+ibot:
+  loss_weight: 1.0
+  mask_sample_probability: 0.5
+  mask_ratio_min_max:
+  - 0.1
+  - 0.5
+  separate_head: false
+  head_n_prototypes: 65536
+  head_bottleneck_dim: 256
+  head_nlayers: 3
+  head_hidden_dim: 2048
+  # [BLOCKER 2 adv fix 2026-05-24] train.py:190-198 only handles
+  # mask_style in {"block", "patch"}; "random" leaves mask_generator
+  # undefined → NameError. UltraDINO default = "block" (iBOT
+  # MaskingGenerator handles patch mask layout).
+  mask_style: block
+
+train:
+  # FUSOURS dataset class (folder-04 187k unlabeled corpus).
+  dataset_path: FUSOURS:split=train
+  # Single RTX PRO 6000 (96 GB) — batch 256 fits BF16 ViT-S/14 multi-crop.
+  batch_size_per_gpu: 64
+  # 187,744 imgs / 256 batch = 733 iter / epoch (1 GPU, 1-step optimizer).
+  OFFICIAL_EPOCH_LENGTH: 2934
+  output_dir: experiments/04_dinov2_ultradinoLIKE/run/01a_dapt_pretrain_seed42
+  # [MEDIUM 9 adv fix 2026-05-24] train.py:178-183 hardcodes period =
+  # 3 * OFFICIAL_EPOCH_LENGTH; saveckp_freq is dead. Field kept for doc but
+  # actual behaviour: ckpt every 3 epochs, max_to_keep=3 backbone snapshots.
+  saveckp_freq: 5      # DEAD upstream (period hardcoded to 3*OFFICIAL_EPOCH_LENGTH)
+  # [MEDIUM 8 adv fix 2026-05-24] train.py:256 hardcodes sampler seed=start_iter;
+  # cfg.train.seed is currently dead. Run tag '_seed42' = theatre until a
+  # vendored patch wires this through. Recipe reproducibility (data order +
+  # init) NOT bit-exact across reruns; numerical AB headline still valid.
+  seed: 42
+  num_workers: 8
+  cache_dataset: false  # corpus too large to cache; PIL.open per sample
+  centering: centering
+  tb_log_freq: 100
+
+student:
+  arch: vit_small
+  patch_size: 14            # OURS (NOT UltraDINO patch=16)
+  drop_path_rate: 0.3       # UltraDINO from_scratch default
+  layerscale: 1.0e-05
+  drop_path_uniform: true
+  # [BLOCKER 3 adv fix 2026-05-24] pretrained_weights left BLANK here;
+  # subprocess CWD=code_dir would mis-resolve any relative path. The nb01a
+  # launcher passes an ABSOLUTE path via `--opts student.pretrained_weights=<abs>`
+  # which OmegaConf.from_cli merges in (config.py:53). Keep blank in YAML.
+  pretrained_weights: ''
+  ffn_layer: mlp
+  # [LOW 11 adv fix 2026-05-24] removed dead `in_channels: 1` legacy field
+  # (only `in_chans` is read by build_model — args.in_chans).
+  block_chunks: 0
+  qkv_bias: true
+  proj_bias: true
+  ffn_bias: true
+  num_register_tokens: 0    # OURS (LVD-142M has no register tokens)
+  interpolate_antialias: false
+  interpolate_offset: 0.1
+  in_chans: 1               # OURS (faithful UltraDINO greyscale)
+
+teacher:
+  momentum_teacher: 0.992
+  final_momentum_teacher: 1.0
+  warmup_teacher_temp: 0.04
+  teacher_temp: 0.07
+  warmup_teacher_temp_epochs: 30
+
+optim:
+  epochs: 40
+  weight_decay: 0.04
+  weight_decay_end: 0.4
+  base_lr: 0.004
+  lr: 0.001
+  warmup_epochs: 10
+  min_lr: 1.0e-06
+  clip_grad: 3.0
+  freeze_last_layer_epochs: 1
+  scaling_rule: sqrt_wrt_1024
+  patch_embed_lr_mult: 0.2
+  layerwise_decay: 0.9
+  adamw_beta1: 0.9
+  adamw_beta2: 0.999
+
+crops:
+  global_crops_scale:
+  - 0.32
+  - 1.0
+  local_crops_number: 8
+  local_crops_scale:
+  - 0.05
+  - 0.32
+  global_crops_size: 224    # UltraDINO multi-crop default; speed > resolution at pretrain
+  local_crops_size: 98
+  # [OURS PATCH DINUS-CARDIAC] explicit OURS scalars; train.py reads these
+  # via getattr() to override DataAugmentationOURUS defaults.
+  # [LOW 12 adv fix doc 2026-05-24] norm stats computed at 518 INTER_LINEAR
+  # in ours_norm_stats.json; SSL crops here are 224/96 — minor distribution
+  # drift in 4th-5th decimal, accepted (cf. md_files/.../CONTEXT.md §2.2).
+  ours_mean_gray: 0.10659946925280621
+  ours_std_gray: 0.16533788546753694
+
+evaluation:
+  eval_period_iterations: 5000
+
+# RankMe num_samples must be <= batch * OFFICIAL_EPOCH_LENGTH = 64 * 2934 = 187,776 OK
+rankme:
+  enabled: true
+  num_samples: 25600
+  every_n_epochs: 5
